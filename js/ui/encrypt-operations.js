@@ -55,17 +55,17 @@ class EncryptOperations {
    */
   validateEncryptInput(mnemonic, password) {
     if (!mnemonic || !mnemonic.trim()) {
-      throw new Error('请输入助记词');
+      throw new Error(i18n.t('msg_need_mnemonic'));
     }
 
     if (!password || !password.trim()) {
-      throw new Error('请输入加密密码');
+      throw new Error(i18n.t('msg_need_encrypt_password'));
     }
 
     // 验证助记词格式（基本验证）
     const words = mnemonic.trim().split(/\s+/);
     if (words.length < 12 || words.length > 24) {
-      throw new Error('助记词应为12-24个单词');
+      throw new Error(i18n.t('msg_mnemonic_length_invalid'));
     }
   }
 
@@ -86,7 +86,7 @@ class EncryptOperations {
     }
 
     // 显示成功消息
-    this.messageManager.showSuccess('加密成功！请保存加密文本');
+    this.messageManager.showSuccess(i18n.t('msg_encrypt_success'));
 
     // 自动滚动到结果区域
     if (resultSection) {
@@ -101,21 +101,21 @@ class EncryptOperations {
   async copyEncryptedResult() {
     const encryptedText = document.getElementById('encryptedResult')?.value;
     if (!encryptedText) {
-      this.messageManager.showError('没有可复制的内容');
+      this.messageManager.showError(i18n.t('msg_no_content_copy'));
       return false;
     }
 
     try {
       const success = await SecurityUtils.copyToClipboard(encryptedText);
       if (success) {
-        this.messageManager.showSuccess('已复制到剪贴板');
+        this.messageManager.showSuccess(i18n.t('msg_copy_ok'));
         return true;
       } else {
-        this.messageManager.showError('复制失败，请手动复制');
+        this.messageManager.showError(i18n.t('msg_copy_fail'));
         return false;
       }
     } catch (error) {
-      this.messageManager.showError(`复制失败: ${error.message}`);
+      this.messageManager.showError(`${i18n.t('msg_copy_fail')}: ${error.message}`);
       return false;
     }
   }
@@ -126,15 +126,15 @@ class EncryptOperations {
   downloadEncryptedResult() {
     const encryptedText = document.getElementById('encryptedResult')?.value;
     if (!encryptedText) {
-      this.messageManager.showError('没有可下载的内容');
+      this.messageManager.showError(i18n.t('msg_no_content_copy'));
       return;
     }
 
     try {
       this.fileHandler.downloadEncryptedResult(encryptedText);
-      this.messageManager.showSuccess('文件下载成功');
+      this.messageManager.showSuccess(i18n.t('msg_download_ok'));
     } catch (error) {
-      this.messageManager.showError(`下载失败: ${error.message}`);
+      this.messageManager.showError(`${i18n.t('msg_copy_fail')}: ${error.message}`);
     }
   }
 

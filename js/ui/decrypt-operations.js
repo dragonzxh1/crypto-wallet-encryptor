@@ -43,21 +43,21 @@ class DecryptOperations {
    */
   validateDecryptInput(encryptedData, password) {
     if (!encryptedData || !encryptedData.trim()) {
-      throw new Error('请输入加密文本');
+      throw new Error(i18n.t('msg_need_encrypted'));
     }
 
     if (!password || !password.trim()) {
-      throw new Error('请输入解密密码');
+      throw new Error(i18n.t('msg_need_decrypt_password'));
     }
 
     // 验证加密数据格式
     try {
       const parsed = JSON.parse(encryptedData);
       if (!parsed.version || !parsed.algorithm || !parsed.ciphertext) {
-        throw new Error('加密数据格式无效');
+        throw new Error('invalid');
       }
     } catch (error) {
-      throw new Error('加密数据格式错误，请检查输入');
+      throw new Error(i18n.t('msg_need_encrypted'));
     }
   }
 
@@ -80,7 +80,7 @@ class DecryptOperations {
     }
 
     // 显示成功消息
-    this.messageManager.showSuccess('解密成功！');
+    this.messageManager.showSuccess(i18n.t('msg_decrypt_success'));
 
     // 设置自动隐藏
     this.setupAutoHide(resultElement);

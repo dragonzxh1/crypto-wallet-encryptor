@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>加密货币钱包助记词加解密工具</title>
+    <title data-i18n="app_title">加密货币钱包助记词加解密工具</title>
     <meta name="description" content="安全的加密货币钱包助记词加解密工具，基于 Web Crypto API，零数据存储">
     <meta name="keywords" content="加密货币,钱包,助记词,加密,解密,安全">
     
@@ -12,6 +12,9 @@
     
     <!-- 自定义样式 -->
     <link rel="stylesheet" href="css/styles.css">
+    
+    <!-- i18n -->
+    <script src="js/ui/i18n.js"></script>
     
     <!-- 安全策略 -->
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; font-src https://cdnjs.cloudflare.com; script-src 'self' 'unsafe-inline';">
@@ -28,24 +31,32 @@
     <div class="container">
         <!-- 头部 -->
         <header class="header">
-            <h1><i class="fas fa-shield-alt"></i> 助记词加解密工具</h1>
-            <p>基于 Web Crypto API 的安全加密方案，零数据存储，保护您的数字资产</p>
+            <h1><i class="fas fa-shield-alt"></i> <span data-i18n="app_title">助记词加解密工具</span></h1>
+            <p data-i18n="app_subtitle">基于 Web Crypto API 的安全加密方案，零数据存储，保护您的数字资产</p>
+            <div style="margin-top:10px;">
+                <label style="color:#fff;opacity:0.9;margin-right:8px;" data-i18n="lang_label">语言</label>
+                <select id="langSelect" style="padding:6px 10px;border-radius:6px;">
+                    <option value="zh-CN" data-i18n="lang_zh">中文</option>
+                    <option value="en" data-i18n="lang_en">英文</option>
+                </select>
+            </div>
         </header>
         
         <!-- 主要内容 -->
         <main class="main-content">
             <!-- 加密部分 -->
             <section class="section" id="encryptSection">
-                <h2><i class="fas fa-lock"></i> 加密助记词</h2>
+                <h2><i class="fas fa-lock"></i> <span data-i18n="encrypt_section">加密助记词</span></h2>
                 
                 <div class="form-group">
                     <label for="mnemonicInput">
-                        <i class="fas fa-key"></i> 助记词
+                        <i class="fas fa-key"></i> <span data-i18n="mnemonic_label">助记词</span>
                     </label>
                     <textarea 
                         id="mnemonicInput" 
                         class="form-control" 
-                        placeholder="请输入您的助记词（12、15、18、21或24个单词）"
+                        data-i18n-placeholder="ph_mnemonic"
+                        placeholder="请输入助记词（12、15、18、21或24个单词）"
                         rows="4"
                     ></textarea>
                     
@@ -54,23 +65,24 @@
                         <input type="file" id="mnemonicFile" accept=".txt">
                         <label for="mnemonicFile" class="file-upload-label">
                             <i class="fas fa-file-upload"></i>
-                            <span>点击上传 .txt 文件</span>
+                            <span data-i18n="upload_mnemonic_txt">点击上传 .txt 文件</span>
                         </label>
                     </div>
                 </div>
                 
                 <div class="form-group">
                     <label for="encryptPassword">
-                        <i class="fas fa-user-lock"></i> 加密密码
+                        <i class="fas fa-user-lock"></i> <span data-i18n="password_label_encrypt">加密密码</span>
                     </label>
                     <div class="password-container">
                         <input 
                             type="password" 
                             id="encryptPassword" 
                             class="form-control" 
+                            data-i18n-placeholder="ph_encrypt_password"
                             placeholder="设置强密码（建议12位以上，包含大小写字母、数字、符号）"
                         >
-                        <button type="button" class="toggle-password" title="显示密码">
+                        <button type="button" class="toggle-password" data-i18n-title="show_password" title="显示密码">
                             <i class="fas fa-eye"></i>
                         </button>
                     </div>
@@ -85,17 +97,17 @@
                     </div>
                     
                     <button type="button" id="generatePasswordBtn" class="btn btn-secondary" style="margin-top: 10px;">
-                        <i class="fas fa-dice"></i> 生成强密码
+                        <i class="fas fa-dice"></i> <span data-i18n="generate_password">生成强密码</span>
                     </button>
                 </div>
                 
                 <button type="button" id="encryptBtn" class="btn btn-primary">
-                    <i class="fas fa-lock"></i> 加密助记词
+                    <i class="fas fa-lock"></i> <span data-i18n="encrypt_button">加密助记词</span>
                 </button>
                 
                 <!-- 加密结果 -->
                 <div id="encryptResultSection" class="result-section">
-                    <h3><i class="fas fa-check-circle"></i> 加密结果</h3>
+                    <h3><i class="fas fa-check-circle"></i> <span data-i18n="encrypt_result">加密结果</span></h3>
                     <textarea 
                         id="encryptedResult" 
                         class="form-control" 
@@ -106,15 +118,15 @@
                     
                     <div class="result-actions">
                         <button type="button" id="copyEncryptedBtn" class="btn btn-success">
-                            <i class="fas fa-copy"></i> 复制到剪贴板
+                            <i class="fas fa-copy"></i> <span data-i18n="copy_to_clipboard">复制到剪贴板</span>
                         </button>
                         <button type="button" id="downloadEncryptedBtn" class="btn btn-secondary">
-                            <i class="fas fa-download"></i> 下载文件
+                            <i class="fas fa-download"></i> <span data-i18n="download_file">下载文件</span>
                         </button>
                     </div>
                     
                     <div class="security-tips">
-                        <h3><i class="fas fa-exclamation-triangle"></i> 重要提醒</h3>
+                        <h3><i class="fas fa-exclamation-triangle"></i> <span data-i18n="important_tips">重要提醒</span></h3>
                         <div id="securityTips"></div>
                     </div>
                 </div>
@@ -122,15 +134,16 @@
             
             <!-- 解密部分 -->
             <section class="section" id="decryptSection">
-                <h2><i class="fas fa-unlock"></i> 解密助记词</h2>
+                <h2><i class="fas fa-unlock"></i> <span data-i18n="decrypt_section">解密助记词</span></h2>
                 
                 <div class="form-group">
                     <label for="encryptedInput">
-                        <i class="fas fa-file-code"></i> 加密文本
+                        <i class="fas fa-file-code"></i> <span data-i18n="encrypted_text_label">加密文本</span>
                     </label>
                     <textarea 
                         id="encryptedInput" 
                         class="form-control" 
+                        data-i18n-placeholder="ph_encrypted_text"
                         placeholder="粘贴之前保存的加密文本"
                         rows="6"
                     ></textarea>
@@ -140,35 +153,36 @@
                         <input type="file" id="encryptedFile" accept=".txt,.json">
                         <label for="encryptedFile" class="file-upload-label">
                             <i class="fas fa-file-upload"></i>
-                            <span>点击上传加密文本文件（.txt/.json）</span>
+                            <span data-i18n="upload_encrypted_file">点击上传加密文本文件（.txt/.json）</span>
                         </label>
                     </div>
                 </div>
                 
                 <div class="form-group">
                     <label for="decryptPassword">
-                        <i class="fas fa-key"></i> 解密密码
+                        <i class="fas fa-key"></i> <span data-i18n="password_label_decrypt">解密密码</span>
                     </label>
                     <div class="password-container">
                         <input 
                             type="password" 
                             id="decryptPassword" 
                             class="form-control" 
+                            data-i18n-placeholder="ph_decrypt_password"
                             placeholder="输入加密时使用的密码"
                         >
-                        <button type="button" class="toggle-password" title="显示密码">
+                        <button type="button" class="toggle-password" data-i18n-title="show_password" title="显示密码">
                             <i class="fas fa-eye"></i>
                         </button>
                     </div>
                 </div>
                 
                 <button type="button" id="decryptBtn" class="btn btn-primary">
-                    <i class="fas fa-unlock"></i> 解密助记词
+                    <i class="fas fa-unlock"></i> <span data-i18n="decrypt_button">解密助记词</span>
                 </button>
                 
                 <!-- 解密结果 -->
                 <div id="decryptResultSection" class="result-section">
-                    <h3><i class="fas fa-key"></i> 解密结果</h3>
+                    <h3><i class="fas fa-key"></i> <span data-i18n="decrypt_result">解密结果</span></h3>
                     <div 
                         id="decryptedMnemonic" 
                         class="mnemonic-display"
@@ -179,7 +193,7 @@
                     
                     <div class="result-actions" style="margin-top: 20px;">
                         <button type="button" id="clearDecryptBtn" class="btn btn-danger">
-                            <i class="fas fa-trash"></i> 清除结果
+                            <i class="fas fa-trash"></i> <span data-i18n="clear_result">清除结果</span>
                         </button>
                     </div>
                 </div>
@@ -207,5 +221,18 @@
     
     <!-- 主应用入口 -->
     <script src="js/main.js"></script>
+    <script>
+      // 初始化语言
+      document.addEventListener('DOMContentLoaded', function(){
+        const select = document.getElementById('langSelect');
+        if (select) {
+          select.value = i18n.locale;
+          select.addEventListener('change', function(){
+            i18n.setLocale(this.value);
+          });
+        }
+        i18n.applyTranslations();
+      });
+    </script>
 </body>
 </html>

@@ -30,14 +30,12 @@ class PasswordStrengthManager {
     const strength = this.encryptor.validatePasswordStrength(password);
     
     this.updateStrengthBar(strengthIndicator, strength.score);
-    this.updateStrengthText(strengthIndicator, strength.feedback, strength.score);
+    this.updateStrengthText(strengthIndicator, password, strength.score);
     this.updateWeakWarning(strengthIndicator, password);
   }
 
   /**
    * 更新强度条
-   * @param {HTMLElement} indicator 强度指示器容器
-   * @param {number} score 强度分数
    */
   updateStrengthBar(indicator, score) {
     const strengthBar = indicator.querySelector('.strength-bar');
@@ -48,30 +46,36 @@ class PasswordStrengthManager {
   }
 
   /**
-   * 更新强度文本
-   * @param {HTMLElement} indicator 强度指示器容器
-   * @param {string} feedback 反馈信息
-   * @param {number} score 强度分数
+   * 更新强度文本（i18n）
    */
-  updateStrengthText(indicator, feedback, score) {
+  updateStrengthText(indicator, password, score) {
     const strengthText = indicator.querySelector('.strength-text');
-    if (strengthText) {
-      strengthText.textContent = feedback;
-      strengthText.className = `strength-text ${this.getStrengthClass(score)}`;
+    if (!strengthText) return;
+
+    const min = 12;
+    let text;
+    if (!password || password.length < min) {
+      text = i18n.t('password_too_short').replace('{min}', String(min));
+    } else {
+      if (score <= 0.25) text = i18n.t('password_very_weak');
+      else if (score <= 0.5) text = i18n.t('password_weak');
+      else if (score <= 0.75) text = i18n.t('password_medium');
+      else text = i18n.t('password_strong');
     }
+
+    strengthText.textContent = text;
+    strengthText.className = `strength-text ${this.getStrengthClass(score)}`;
   }
 
   /**
    * 更新弱密码警告
-   * @param {HTMLElement} indicator 强度指示器容器
-   * @param {string} password 密码
    */
   updateWeakWarning(indicator, password) {
     const weakWarning = indicator.querySelector('.weak-warning');
     if (weakWarning) {
       if (this.securityUtils.isWeakPassword(password)) {
         weakWarning.style.display = 'block';
-        weakWarning.textContent = '⚠️ 检测到常见弱密码模式';
+        weakWarning.textContent = i18n.t('password_weak');
       } else {
         weakWarning.style.display = 'none';
       }
@@ -80,8 +84,6 @@ class PasswordStrengthManager {
 
   /**
    * 获取强度样式类
-   * @param {number} score 强度分数
-   * @returns {string} CSS 类名
    */
   getStrengthClass(score) {
     if (score <= 0.25) return 'very-weak';

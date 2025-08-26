@@ -125,14 +125,11 @@ class EncryptDecryptUI {
       const mnemonic = document.getElementById('mnemonicInput')?.value?.trim();
       const password = document.getElementById('encryptPassword')?.value;
 
-      // 执行加密
       const encrypted = await this.encryptOps.executeEncrypt(mnemonic, password);
-      
-      // 处理加密结果
       this.encryptOps.handleEncryptResult(encrypted);
 
     } catch (error) {
-      this.messageManager.showError(`加密失败: ${error.message}`);
+      this.messageManager.showError(`${i18n.t('msg_encrypting')} ${error.message}`);
     }
   }
 
@@ -144,14 +141,11 @@ class EncryptDecryptUI {
       const encryptedData = document.getElementById('encryptedInput')?.value?.trim();
       const password = document.getElementById('decryptPassword')?.value;
 
-      // 执行解密
       const decrypted = await this.decryptOps.executeDecrypt(encryptedData, password);
-      
-      // 处理解密结果
       this.decryptOps.handleDecryptResult(decrypted);
 
     } catch (error) {
-      this.messageManager.showError(`解密失败: ${error.message}`);
+      this.messageManager.showError(`${i18n.t('msg_decrypting')} ${error.message}`);
     }
   }
 
@@ -163,16 +157,13 @@ class EncryptDecryptUI {
     event.preventDefault();
     event.stopPropagation();
 
-    // 按钮本身
     const button = event.currentTarget;
 
-    // 更稳健地获取容器与输入框
     const container = button.closest('.password-container') || button.parentNode;
     const input = container ? container.querySelector('input[type="password"], input[type="text"]') : null;
     const icon = button.querySelector('i');
 
     if (!input) {
-      // 若未找到输入框，直接返回
       return;
     }
 
@@ -181,7 +172,6 @@ class EncryptDecryptUI {
     try {
       input.type = isHidden ? 'text' : 'password';
     } catch (e) {
-      // 某些环境下直接赋值可能失败，使用 setAttribute 兜底
       input.setAttribute('type', isHidden ? 'text' : 'password');
     }
 
@@ -189,7 +179,8 @@ class EncryptDecryptUI {
       icon.className = isHidden ? 'fas fa-eye-slash' : 'fas fa-eye';
     }
 
-    button.title = isHidden ? '隐藏密码' : '显示密码';
+    const titleKey = isHidden ? 'hide_password' : 'show_password';
+    button.title = i18n.t(titleKey);
     button.setAttribute('aria-pressed', String(isHidden));
   }
 
@@ -200,12 +191,13 @@ class EncryptDecryptUI {
     const tipsContainer = document.getElementById('securityTips');
     if (!tipsContainer) return;
 
+    tipsContainer.innerHTML = '';
     const tips = [
-      '✅ 保存加密文本：复制到备忘录/密码管理器，勿发邮件/云盘',
-      '✅ 密码强度：混合大小写、数字、符号（如 F8@zq#2L9!uV$）',
-      '⛔ 网络环境：仅在可信设备/网络中使用，避免公共WiFi',
-      '⛔ 设备安全：确保无恶意插件或屏幕监控软件',
-      '⚠️ 重要提醒：加密密码是唯一恢复凭证，丢失后无法解密！'
+      i18n.t('tip_save_cipher'),
+      i18n.t('tip_password_strength'),
+      i18n.t('tip_network'),
+      i18n.t('tip_device'),
+      i18n.t('tip_password_warning')
     ];
 
     tips.forEach(tip => {
