@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>加密货币钱包助记词加解密工具</title>
+    <meta name="description" content="安全的加密货币钱包助记词加解密工具，基于 Web Crypto API，零数据存储">
+    <meta name="keywords" content="加密货币,钱包,助记词,加密,解密,安全">
+    
+    <!-- Font Awesome 图标 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- 自定义样式 -->
+    <link rel="stylesheet" href="css/styles.css">
+    
+    <!-- 安全策略 -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; font-src https://cdnjs.cloudflare.com; script-src 'self' 'unsafe-inline';">
+</head>
+<body>
+    <!-- 消息提示容器 -->
+    <div id="messageContainer" class="message-container"></div>
+    
+    <!-- 加载指示器 -->
+    <div id="loadingIndicator" class="loading-indicator">
+        <span>正在处理...</span>
+    </div>
+    
+    <div class="container">
+        <!-- 头部 -->
+        <header class="header">
+            <h1><i class="fas fa-shield-alt"></i> 助记词加解密工具</h1>
+            <p>基于 Web Crypto API 的安全加密方案，零数据存储，保护您的数字资产</p>
+        </header>
+        
+        <!-- 主要内容 -->
+        <main class="main-content">
+            <!-- 加密部分 -->
+            <section class="section" id="encryptSection">
+                <h2><i class="fas fa-lock"></i> 加密助记词</h2>
+                
+                <div class="form-group">
+                    <label for="mnemonicInput">
+                        <i class="fas fa-key"></i> 助记词
+                    </label>
+                    <textarea 
+                        id="mnemonicInput" 
+                        class="form-control" 
+                        placeholder="请输入您的助记词（12、15、18、21或24个单词）"
+                        rows="4"
+                    ></textarea>
+                    
+                    <!-- 文件上传 -->
+                    <div class="file-upload" style="margin-top: 15px;">
+                        <input type="file" id="mnemonicFile" accept=".txt">
+                        <label for="mnemonicFile" class="file-upload-label">
+                            <i class="fas fa-file-upload"></i>
+                            <span>点击上传 .txt 文件</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="encryptPassword">
+                        <i class="fas fa-user-lock"></i> 加密密码
+                    </label>
+                    <div class="password-container">
+                        <input 
+                            type="password" 
+                            id="encryptPassword" 
+                            class="form-control" 
+                            placeholder="设置强密码（建议12位以上，包含大小写字母、数字、符号）"
+                        >
+                        <button type="button" class="toggle-password" title="显示密码">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- 密码强度指示器 -->
+                    <div class="password-strength">
+                        <div class="strength-bar-container">
+                            <div class="strength-bar" style="width: 0%"></div>
+                        </div>
+                        <div class="strength-text">请输入密码</div>
+                        <div class="weak-warning"></div>
+                    </div>
+                    
+                    <button type="button" id="generatePasswordBtn" class="btn btn-secondary" style="margin-top: 10px;">
+                        <i class="fas fa-dice"></i> 生成强密码
+                    </button>
+                </div>
+                
+                <button type="button" id="encryptBtn" class="btn btn-primary">
+                    <i class="fas fa-lock"></i> 加密助记词
+                </button>
+                
+                <!-- 加密结果 -->
+                <div id="encryptResultSection" class="result-section">
+                    <h3><i class="fas fa-check-circle"></i> 加密结果</h3>
+                    <textarea 
+                        id="encryptedResult" 
+                        class="form-control" 
+                        readonly 
+                        placeholder="加密结果将显示在这里"
+                        rows="6"
+                    ></textarea>
+                    
+                    <div class="result-actions">
+                        <button type="button" id="copyEncryptedBtn" class="btn btn-success">
+                            <i class="fas fa-copy"></i> 复制到剪贴板
+                        </button>
+                        <button type="button" id="downloadEncryptedBtn" class="btn btn-secondary">
+                            <i class="fas fa-download"></i> 下载文件
+                        </button>
+                    </div>
+                    
+                    <div class="security-tips">
+                        <h3><i class="fas fa-exclamation-triangle"></i> 重要提醒</h3>
+                        <div id="securityTips"></div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- 解密部分 -->
+            <section class="section" id="decryptSection">
+                <h2><i class="fas fa-unlock"></i> 解密助记词</h2>
+                
+                <div class="form-group">
+                    <label for="encryptedInput">
+                        <i class="fas fa-file-code"></i> 加密文本
+                    </label>
+                    <textarea 
+                        id="encryptedInput" 
+                        class="form-control" 
+                        placeholder="粘贴之前保存的加密文本"
+                        rows="6"
+                    ></textarea>
+
+                    <!-- 文件上传（用于解密） -->
+                    <div class="file-upload" style="margin-top: 15px;">
+                        <input type="file" id="encryptedFile" accept=".txt,.json">
+                        <label for="encryptedFile" class="file-upload-label">
+                            <i class="fas fa-file-upload"></i>
+                            <span>点击上传加密文本文件（.txt/.json）</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="decryptPassword">
+                        <i class="fas fa-key"></i> 解密密码
+                    </label>
+                    <div class="password-container">
+                        <input 
+                            type="password" 
+                            id="decryptPassword" 
+                            class="form-control" 
+                            placeholder="输入加密时使用的密码"
+                        >
+                        <button type="button" class="toggle-password" title="显示密码">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <button type="button" id="decryptBtn" class="btn btn-primary">
+                    <i class="fas fa-unlock"></i> 解密助记词
+                </button>
+                
+                <!-- 解密结果 -->
+                <div id="decryptResultSection" class="result-section">
+                    <h3><i class="fas fa-key"></i> 解密结果</h3>
+                    <div 
+                        id="decryptedMnemonic" 
+                        class="mnemonic-display"
+                        style="display: none;"
+                    >
+                        解密后的助记词将显示在这里
+                    </div>
+                    
+                    <div class="result-actions" style="margin-top: 20px;">
+                        <button type="button" id="clearDecryptBtn" class="btn btn-danger">
+                            <i class="fas fa-trash"></i> 清除结果
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- JavaScript 模块化加载 -->
+    <!-- 核心加密模块 -->
+    <script src="js/crypto/mnemonic-encryptor.js"></script>
+    
+    <!-- 工具模块 -->
+    <script src="js/utils/security-utils.js"></script>
+    
+    <!-- UI 模块 -->
+    <script src="js/ui/password-strength-manager.js"></script>
+    <script src="js/ui/file-handler.js"></script>
+    <script src="js/ui/message-manager.js"></script>
+    <script src="js/ui/encrypt-operations.js"></script>
+    <script src="js/ui/decrypt-operations.js"></script>
+    <script src="js/ui/encrypt-decrypt-ui.js"></script>
+    
+    <!-- 模块加载器 -->
+    <script src="js/ui/module-loader.js"></script>
+    
+    <!-- 主应用入口 -->
+    <script src="js/main.js"></script>
+</body>
+</html>
